@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1794098107 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\main.c
+	<stdio.h>
+	<string.h>
+	"grafo.h"
+	"dijkstra.h"
+	"enrutamiento.h"
+	"tests.h"
+
+1794097878 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.h
+
+1793310857 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.h
+	"grafo.h"
+
+1793310910 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.h
+	"dijkstra.h"
+
+1793310935 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.h
+
+1793310950 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.c
+	<stdio.h>
+	"tests.h"
+	"dijkstra.h"
+	"enrutamiento.h"
+
+1794097817 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"grafo.h"
+
