@@ -4,15 +4,13 @@
 #include "dijkstra.h"
 
 typedef struct {
-    int destino;
+    char destino[MAX_NOMBRE];
     int costo;
-    int siguienteSalto;   /* -1 si inalcanzable */
+    char siguienteSalto[MAX_NOMBRE];   /* -1 si inalcanzable */
 } EntradaRuta;
 
-int  construirTablaRutas(const Red *red, int origen,
-                         const ResultadoDijkstra *res,
-                         EntradaRuta *tabla);
-void mostrarTablaRutas(const Red *red, const EntradaRuta *tabla);
+int  construirTablaRutas(Red *red, int origen, ResultadoDijkstra *res, EntradaRuta *tabla);
+void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen);
 int  simularEnvioPaquete(const Red *red, int origen, int destino,
                          const ResultadoDijkstra *res);
 

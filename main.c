@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "grafo.h"
 #include "dijkstra.h"
@@ -91,29 +92,48 @@ static void opcionAgregarEnlace(Red *red) {
     }
 }
 
-/*static void opcionTablaRutas(const Red *red) {
-    if (red->numRouters == 0) { printf("Primero cargue una topologia.\n"); return; }
-    int origen;
-    if (leerEntero("Indice del router origen: ", &origen) != 0) return;
-    if (origen < 0 || origen >= red->numRouters) {
-        printf("Indice fuera de rango (0..%d).\n", red->numRouters - 1);
-        return;
+static void opcionTablaRutas(Red *red) {
+    if (red->numRouters == 0) {
+            printf("Primero cargue una topologia.\n");
+            return;
+    }
+    ResultadoDijkstra res;
+    char router_inicial[MAX_NOMBRE];
+    printf("Ingrese el nombre del router desde el cual quiere partir:\n");
+    if(fgets(router_inicial, MAX_NOMBRE, stdin)!=NULL){
+        router_inicial[strcspn(router_inicial, "\n")]='\0';
+    }
+    int origen=buscar_Router(red, router_inicial);
+    if (dijkstra(red, origen, &res) != 0) {
+            printf("Error en Dijkstra.\n");
+            return;
     }
 
-    ResultadoDijkstra res;
-    if (dijkstra(red, origen, &res) != 0) { printf("Error en Dijkstra.\n"); return; }
 
-    EntradaRuta tabla[MAX_ROUTERS];
+
+    EntradaRuta *tabla = (EntradaRuta *)malloc(red->numRouters * sizeof(EntradaRuta));
     construirTablaRutas(red, origen, &res, tabla);
-
-    printf("\nTabla de rutas desde %s:\n", red->nombres[origen]);
-    mostrarTablaRutas(red, tabla);
+    mostrarTablaRutas(red, tabla, origen);
 }
 
-static void opcionSimularPaquete(const Red *red) {
-    if (red->numRouters == 0) { printf("Primero cargue una topologia.\n"); return; }
-    int o, d;
-    if (leerEntero("Router origen: ", &o) != 0) return;
+/*static void opcionSimularPaquete(const Red *red) {
+    if (red->numRouters == 0) {
+            printf("Primero cargue una topologia.\n");
+            return;
+    }
+    int o, d, indice1, indice2;
+    char router1[MAX_NOMBRE], router2[MAX_NOMBRE];
+    printf("Ingrese el router de inicio de red:\n");
+    if(fgets(router1, MAX_NOMBRE, stdin)!=NULL){
+        router1[strcspn(router1, "\n"]='\0';
+    }
+    printf("Ingrese el router de destino de red:\n");
+    if(fgets(router2, MAX_NOMBRE, stdin)!=NULL){
+        router2[strcspn(router2, "\n")]='\0';
+    }
+    //o=buscar_Router(red, router1);
+    d=buscar_Router(red, router2);
+    //if (leerEntero("Router origen: ", &o) != 0) return;
     if (leerEntero("Router destino: ", &d) != 0) return;
     if (o < 0 || o >= red->numRouters || d < 0 || d >= red->numRouters) {
         printf("Indices fuera de rango.\n");
@@ -121,8 +141,8 @@ static void opcionSimularPaquete(const Red *red) {
     }
 
     ResultadoDijkstra res;
-    dijkstra(red, o, &res);
-    simularEnvioPaquete(red, o, d, &res);
+    dijkstra(red, &res, router2);
+    //simularEnvioPaquete(red, o, d, &res);
 }*/
 
 int main(/*int argc, char *argv[]*/) {
@@ -132,11 +152,12 @@ int main(/*int argc, char *argv[]*/) {
 
     Red red;
     inicializarRed(&red, 3);
-
     int opcion;
     do {
         mostrarMenu();
-        if (scanf("%d", &opcion) != 1) { limpiarBuffer(); continue; }
+        if (scanf("%d", &opcion) != 1) {
+                limpiarBuffer();
+                continue; }
         limpiarBuffer();
 
         switch (opcion) {
@@ -145,11 +166,14 @@ int main(/*int argc, char *argv[]*/) {
                 cargarTopologiaEjemplo(&red);
                 printf("Topologia de ejemplo cargada (%d routers).\n", red.numRouters);
                 break;
-            case 3: opcionAgregarEnlace(&red); break;
-            case 4: mostrarTopologia(&red);    break;
-            /*case 5: opcionTablaRutas(&red);    break;
-            case 6: opcionSimularPaquete(&red); break;
-            case 7: {
+            case 3: opcionAgregarEnlace(&red);
+            break;
+            case 4: mostrarTopologia(&red);
+            break;
+            case 5: opcionTablaRutas(&red);
+            break;
+            //case 6: opcionSimularPaquete(&red); break;
+            /*case 7: {
                 int fallos = ejecutarTodasLasPruebas();
                 printf("Pruebas fallidas: %d\n", fallos);
                 break;

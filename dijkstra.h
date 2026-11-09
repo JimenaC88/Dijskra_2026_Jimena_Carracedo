@@ -9,6 +9,6 @@ typedef struct {
     int visitado[MAX_ROUTERS];
 } ResultadoDijkstra;
 
-int dijkstra(const Red *red, int origen, ResultadoDijkstra *res);
+int dijkstra(Red *red, int origen, ResultadoDijkstra *res);
 
 #endif /* DIJKSTRA_H */

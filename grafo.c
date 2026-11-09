@@ -3,24 +3,37 @@
 #include <string.h>
 #include <stdbool.h>
 #include "grafo.h"
+int leerNombreRouter(Red *red, int idx){
+    red->nombres[idx]=(char*)malloc(MAX_NOMBRE*sizeof(char));
+    if(red->nombres[idx]==NULL){
+        printf("Error al asignar memoria para el nombre del router.");
+        return 1;
+    }
 
+
+            printf("Ingrese el nombre del router %d:\n", idx+1);
+                if(fgets(red->nombres[idx], MAX_NOMBRE, stdin)!=NULL){
+                red->nombres[idx][strcspn(red->nombres[idx], "\n")]='\0';
+                }
+    return 0;
+}
 int inicializarRed(Red *red, int cant_routers){
 
     red->numRouters=cant_routers;
     for(int i=0; i<cant_routers; i++){
-    red->nombres[i]=(char*)malloc(MAX_NOMBRE*sizeof(char));
+        red->nombres[i]=(char*)malloc(MAX_NOMBRE*sizeof(char));
     if(red->nombres[i]==NULL){
         printf("Error al asignar memoria para el nombre del router.");
         return 1;
     }
-    }
-        for(int i=0; i<cant_routers; i++){
+
 
             printf("Ingrese el nombre del router %d:\n", i+1);
                 if(fgets(red->nombres[i], MAX_NOMBRE, stdin)!=NULL){
                 red->nombres[i][strcspn(red->nombres[i], "\n")]='\0';
                 }
-            }
+    }
+
         for(int i=0; i<cant_routers; i++){
             for(int j=0; j<cant_routers; j++){
                 if(i==j){
@@ -33,7 +46,14 @@ int inicializarRed(Red *red, int cant_routers){
     return 0;
 }
 int  setNombreRouter(Red *red, int idx, const char *nombre){
+     int largo=strlen(nombre);
+     red->nombres[idx]=(char*)malloc(largo*sizeof(char));
+     if(red->nombres[idx]==NULL){
+        printf("Error al asignar memoria para el nombre.\n");
+        return 1;
+     }
      strcpy(red->nombres[idx], nombre);
+     red->nombres[idx][strcspn(red->nombres[idx], "\n")]='\0';
      return 0;
 }
 
@@ -81,7 +101,7 @@ int  cargarTopologiaEjemplo(Red *red){
                 conectadas=true;
             }
             if(conectadas){
-            printf("Ingrese el costo desde el router %s al %s", red->nombres[i], red->nombres[j]);
+            printf("Ingrese el costo desde el router %s al %s\n", red->nombres[i], red->nombres[j]);
             scanf("%d", &costo);
             red->matriz[i][j]=costo;
             red->matriz[j][i]=red->matriz[i][j];
@@ -126,11 +146,11 @@ void liberarRed(Red *red){
         }
         for(int i=0; i<red->numRouters; i++){
         for(int j=0; j<red->numRouters; j++){
-            free(red->matriz[i][j]);
+            free(&red->matriz[i][j]);
         }
         }
         free(red->matriz);
-        free(red->numRouters);
+        free(&red->numRouters);
         free(red);
 
 }
