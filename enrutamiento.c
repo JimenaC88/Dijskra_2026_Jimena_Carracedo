@@ -14,15 +14,7 @@ int  construirTablaRutas(Red *red, int j, ResultadoDijkstra *res, EntradaRuta *t
             tabla[i].costo=INF;
             strcpy(tabla[i].siguienteSalto, "Desconectado");
         }else{
-           int actual=i;
-           int pred=res->predecesor[i];
-
-        while(pred!=-1&&pred!=j){
-            actual=pred;
-            pred=res->predecesor[actual];
-        }
-        strcpy(tabla[i].siguienteSalto, red->nombres[actual]);
-
+            strcpy(tabla[i].siguienteSalto, res->nodo[i]) ;
     }
     }
 
@@ -33,16 +25,49 @@ void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
      printf("\n=======================================================\n");
         printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
         printf("=======================================================\n");
-        printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Siguiente Salto)");
+        printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Router previo)");
         printf("-------------------------------------------------------\n");
         for(int i=0; i<red->numRouters; i++){
             printf("Router %-8s    ", tabla[i].destino);
             if (tabla[i].costo == INF) {
             printf("%-15s %-20s\n", "Desconectado", "Ninguna");
         } else {
-            printf("%-15d %-25s\n", tabla[i].costo, tabla[i].siguienteSalto);
+            printf("%-15d", tabla[i].costo);
+            if(i!=0){
+            for(int k=0; k<i; k++){
+            printf(" %s ->", tabla[k].siguienteSalto);
+            }
+            printf(" %s", tabla[i].siguienteSalto);
             printf("\n");
+            }else{
+            printf("%-25s\n", " Ninguno");
+            }
         }
     }
-    printf("=======================================================\n");
 }
+/*int  simularEnvioPaquete(Red *red, int origen, int destino, ResultadoDijkstra *res){
+        EntradaRuta tabla;
+            for(int i=0; i<red->numRouters; i++){
+                strcpy(tabla[i].destino, red->nombres[i]);
+                tabla[i].costo=res->distancia[i];
+            if(i==j){
+                tabla[i].costo=0;
+                strcpy(tabla[i].siguienteSalto, "Ninguno");
+                    }else if(res->distancia[i]==INF){
+                        tabla[i].costo=INF;
+                        strcpy(tabla[i].siguienteSalto, "Desconectado");
+                    }else{
+                    int actual=i;
+                    int pred=res->predecesor[i];
+
+                    while(pred!=false&&pred!=j){
+                        actual=pred;
+                        pred=res->predecesor[actual];
+                }
+        strcpy(tabla[i].siguienteSalto, red->nombres[actual]);
+
+    }
+    }
+
+    return 0;
+}*/

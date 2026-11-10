@@ -98,6 +98,7 @@ static void opcionTablaRutas(Red *red) {
             return;
     }
     ResultadoDijkstra res;
+    memset(&res, 0, sizeof(ResultadoDijkstra));
     char router_inicial[MAX_NOMBRE];
     printf("Ingrese el nombre del router desde el cual quiere partir:\n");
     if(fgets(router_inicial, MAX_NOMBRE, stdin)!=NULL){
@@ -116,33 +117,31 @@ static void opcionTablaRutas(Red *red) {
     mostrarTablaRutas(red, tabla, origen);
 }
 
-/*static void opcionSimularPaquete(const Red *red) {
+/*static void opcionSimularPaquete(Red *red) {
     if (red->numRouters == 0) {
             printf("Primero cargue una topologia.\n");
             return;
     }
-    int o, d, indice1, indice2;
+    int o, d;
     char router1[MAX_NOMBRE], router2[MAX_NOMBRE];
     printf("Ingrese el router de inicio de red:\n");
     if(fgets(router1, MAX_NOMBRE, stdin)!=NULL){
-        router1[strcspn(router1, "\n"]='\0';
+        router1[strcspn(router1, "\n")]='\0';
     }
     printf("Ingrese el router de destino de red:\n");
     if(fgets(router2, MAX_NOMBRE, stdin)!=NULL){
         router2[strcspn(router2, "\n")]='\0';
     }
-    //o=buscar_Router(red, router1);
+    o=buscar_Router(red, router1);
     d=buscar_Router(red, router2);
-    //if (leerEntero("Router origen: ", &o) != 0) return;
-    if (leerEntero("Router destino: ", &d) != 0) return;
     if (o < 0 || o >= red->numRouters || d < 0 || d >= red->numRouters) {
         printf("Indices fuera de rango.\n");
         return;
     }
 
     ResultadoDijkstra res;
-    dijkstra(red, &res, router2);
-    //simularEnvioPaquete(red, o, d, &res);
+    dijkstra(red, o, &res);
+    simularEnvioPaquete(red, o, d, &res);
 }*/
 
 int main(/*int argc, char *argv[]*/) {
@@ -151,7 +150,7 @@ int main(/*int argc, char *argv[]*/) {
         //return ejecutarTodasLasPruebas();
 
     Red red;
-    inicializarRed(&red, 3);
+    //inicializarRed(&red, 3);
     int opcion;
     do {
         mostrarMenu();
