@@ -8,20 +8,16 @@
 
 static void limpiarBuffer(void) {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF){
-
-    }
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 static int leerEntero(const char *msg, int *out) {
     printf("%s", msg);
-    if (scanf("%d", out) != 1) {
-            limpiarBuffer();
-            return -1;
-    }
+    if (scanf("%d", out) != 1) { limpiarBuffer(); return -1; }
     limpiarBuffer();
     return 0;
 }
+
 
 static void mostrarMenu(void) {
     printf("\n===== SIMULADOR DE ENRUTAMIENTO - DIJKSTRA =====\n");
@@ -150,27 +146,31 @@ int main(/*int argc, char *argv[]*/) {
         //return ejecutarTodasLasPruebas();
 
     Red red;
+
     //inicializarRed(&red, 3);
     int opcion;
     do {
         mostrarMenu();
         if (scanf("%d", &opcion) != 1) {
                 limpiarBuffer();
-                continue; }
+            continue;
+        }
         limpiarBuffer();
 
         switch (opcion) {
-            case 1: opcionCargarArchivo(&red); break;
+            case 1: opcionCargarArchivo(&red);
+                    break;
             case 2:
                 cargarTopologiaEjemplo(&red);
                 printf("Topologia de ejemplo cargada (%d routers).\n", red.numRouters);
                 break;
             case 3: opcionAgregarEnlace(&red);
-            break;
+                    break;
             case 4: mostrarTopologia(&red);
-            break;
-            case 5: opcionTablaRutas(&red);
-            break;
+                    break;
+            case 5:
+                opcionTablaRutas(&red);
+                break;
             //case 6: opcionSimularPaquete(&red); break;
             /*case 7: {
                 int fallos = ejecutarTodasLasPruebas();

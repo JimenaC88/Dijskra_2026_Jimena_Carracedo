@@ -33,17 +33,23 @@ void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
             printf("%-15s %-20s\n", "Desconectado", "Ninguna");
         } else {
             printf("%-15d", tabla[i].costo);
-            if(i!=0){
-            for(int k=0; k<i; k++){
-            printf(" %s ->", tabla[k].siguienteSalto);
-            }
-            printf(" %s", tabla[i].siguienteSalto);
-            printf("\n");
+            if(i==origen){
+
+            printf(" %-30s \n", "Ninguno -Origen-");
             }else{
-            printf("%-25s\n", " Ninguno");
+            printf("Desde %s -> %s\n", tabla[i].siguienteSalto, tabla[i].destino);
             }
         }
     }
+    printf("\n===================================================================\n");
+
+    printf("RUTA FINAL OPTIMIZADA:\n");
+    printf("\n===================================================================\n");
+    for(int i=red->numRouters-1; i>0; i--){
+        printf("%s - > ", tabla[i].destino);
+    }
+    printf(" %s ", tabla[0].destino);
+    printf("\n===================================================================\n");
 }
 /*int  simularEnvioPaquete(Red *red, int origen, int destino, ResultadoDijkstra *res){
         EntradaRuta tabla;
