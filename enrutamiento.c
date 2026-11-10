@@ -46,9 +46,17 @@ void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
     printf("RUTA FINAL OPTIMIZADA:\n");
     printf("\n===================================================================\n");
     for(int i=red->numRouters-1; i>0; i--){
+        if(tabla[i].costo!=INF){
         printf("%s - > ", tabla[i].destino);
+        }else{
+        printf("No hay ruta posible a %s\n", tabla[i].destino);
+        }
     }
+    if(tabla[0].costo!=INF){
     printf(" %s ", tabla[0].destino);
+    }else{
+    printf("No hay ruta posible a %s", tabla[0].destino);
+    }
     printf("\n===================================================================\n");
 }
 /*int  simularEnvioPaquete(Red *red, int origen, int destino, ResultadoDijkstra *res){
