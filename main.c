@@ -148,6 +148,9 @@ int main(/*int argc, char *argv[]*/) {
     Red red;
 
     //inicializarRed(&red, 3);
+    int origen=0, destino=0;
+    char or[MAX_NOMBRE], des[MAX_NOMBRE];
+    ResultadoDijkstra res;
     int opcion;
     do {
         mostrarMenu();
@@ -171,7 +174,19 @@ int main(/*int argc, char *argv[]*/) {
             case 5:
                 opcionTablaRutas(&red);
                 break;
-            //case 6: opcionSimularPaquete(&red); break;
+            case 6:
+                printf("Ingrese el nombre del router de origen:\n");
+                if(fgets(or, MAX_NOMBRE, stdin)!=NULL){
+                        or[strcspn(or, "\n")]='\0';
+                }
+                printf("Ingrese el nombre del router de destino:\n");
+                if(fgets(des, MAX_NOMBRE, stdin)!=NULL){
+                        des[strcspn(des, "\n")]='\0';
+                }
+                origen=buscar_Router(&red, or);
+                destino=buscar_Router(&red, des);
+                simularEnvioPaquete(&red, origen, destino, &res);
+            break;
             /*case 7: {
                 int fallos = ejecutarTodasLasPruebas();
                 printf("Pruebas fallidas: %d\n", fallos);

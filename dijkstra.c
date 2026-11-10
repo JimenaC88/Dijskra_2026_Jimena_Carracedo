@@ -44,6 +44,5 @@ int dijkstra(Red *red, int indice, ResultadoDijkstra *res){
             }
         }
     }
-    printf("Sale de dijskra\n");
     return 0;
 }

@@ -11,7 +11,6 @@ typedef struct {
 
 int  construirTablaRutas(Red *red, int origen, ResultadoDijkstra *res, EntradaRuta *tabla);
 void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen);
-int  simularEnvioPaquete(const Red *red, int origen, int destino,
-                         const ResultadoDijkstra *res);
+int  simularEnvioPaquete( Red *red, int origen, int destino, ResultadoDijkstra *res);
 
 #endif /* ENRUTAMIENTO_H */
