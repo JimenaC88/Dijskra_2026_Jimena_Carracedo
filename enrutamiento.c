@@ -3,37 +3,47 @@
 #include "enrutamiento.h"
 #include "dijkstra.h"
 #include <string.h>
-int  construirTablaRutas(Red *red, int j, ResultadoDijkstra *res, EntradaRuta *tabla){
-    for(int i=0; i<red->numRouters; i++){
-        strcpy(tabla[i].destino, red->nombres[i]);
+int  construirTablaRutas(const Red *red, int origen, const ResultadoDijkstra *res, EntradaRuta *tabla){
 
-        tabla[i].costo=res->distancia[i];
+    if (origen < 0 || origen >= red->numRouters) {
+    return -1;
+    }
+    for (int i = 0; i < red->numRouters; i++) {
+        tabla[i].destino = i;
+        tabla[i].costo = res->distancia[i];
 
-        if(i==j){
-            tabla[i].costo=0;
-            strcpy(tabla[i].siguienteSalto, "Ninguno");
-
-        }else if(res->distancia[i]==INF){
-            tabla[i].costo=INF;
-            strcpy(tabla[i].siguienteSalto, "Desconectado");
-        }else{
-
-            strcpy(tabla[i].siguienteSalto, res->nodo[i]);
+        if (i == origen) {
+            tabla[i].costo = 0;
+            tabla[i].siguienteSalto = origen;
+        } else if (res->distancia[i] == INF) {
+            tabla[i].costo = INF;
+            tabla[i].siguienteSalto = -1;
+        } else {
+            int actual = i;
+            while (res->predecesor[actual] != origen && res->predecesor[actual] != -1) {
+                actual = res->predecesor[actual];
             }
-
+            tabla[i].siguienteSalto = actual;
         }
-
+    }
     return 0;
 }
 
-void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
-     printf("\n=======================================================\n");
+void mostrarTablaRutas(const Red *red, const EntradaRuta *tabla){
+    int origen = 0;
+    for (int i = 0; i < red->numRouters; i++) {
+        if (tabla[i].costo == 0) {
+            origen = i;
+            break;
+        }
+    }
+        printf("\n=======================================================\n");
         printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
         printf("=======================================================\n");
         printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Router previo)");
         printf("-------------------------------------------------------\n");
         for(int i=0; i<red->numRouters; i++){
-            printf("Router %-8s    ", tabla[i].destino);
+            printf("Router %-8s    ", red->nombres[tabla[i].destino]);
             if (tabla[i].costo == INF) {
             printf("%-15s %-20s\n", "Desconectado", "Ninguna");
         } else {
@@ -42,7 +52,7 @@ void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
 
             printf(" %-30s \n", "Ninguno -Origen-");
             }else{
-            printf("Desde: %s -> %s \n", tabla[i].siguienteSalto, tabla[i].destino);
+            printf("Desde: %s -> R%s \n", red->nombres[tabla[i].siguienteSalto], red->nombres[tabla[i].destino]);
             }
         }
     }
@@ -51,29 +61,147 @@ void mostrarTablaRutas(Red *red, EntradaRuta *tabla, int origen){
     printf("RUTA FINAL OPTIMIZADA:\n");
     printf("\n===================================================================\n");
     for(int i=0; i<red->numRouters; i++){
-        printf("Desde %s - > %s con costo %d\n", tabla[i].siguienteSalto, tabla[i].destino, tabla[i].costo);
+        printf("Desde %s - > %s con costo %d\n", red->nombres[tabla[i].siguienteSalto], red->nombres[tabla[i].destino], tabla[i].costo);
         if(tabla[i].costo==INF){
-        printf("\nNo hay ruta posible a %s\n", tabla[i].destino);
+        printf("\nNo hay ruta posible a %s\n", red->nombres[tabla[i].destino]);
+        }
+    }
+    printf("\n===================================================================\n");
+}
+int  simularEnvioPaquete(const Red *red, int origen, int destino, const ResultadoDijkstra *res){
+        EntradaRuta *tabla = malloc(red->numRouters * sizeof(EntradaRuta));
+    if (tabla != NULL) {
+        construirTablaRutas(red, origen, res, tabla);
+        free(tabla);
+    }
+
+
+    printf("\n===========================================\n");
+
+    if (res->distancia[destino] == INF) {
+        printf("No hay ruta posible al paquete %s.", red->nombres[destino]);
+        printf("\n===========================================\n");
+        return -1;
+    }
+
+    if (origen == destino) {
+        printf("Paquete local: %s ya es el destino.\n", red->nombres[origen]);
+        printf("Costo del paquete: %d", res->distancia[destino]);
+        printf("\n===========================================\n");
+        return 0;
+    }
+
+
+    printf("Paquete enviado de %s a %s.\n", red->nombres[origen], red->nombres[destino]);
+    printf("Costo del paquete: %d", res->distancia[destino]);
+    printf("\n===========================================\n");
+
+    return 0;
+
+}
+int  construirTablaRutas_paraRedManual(Red *red, int j, ResultadoDijkstra *res, EntradaRuta *tabla){
+    if (j < 0 || j >= red->numRouters) {
+    return -1;
+    }
+    for (int i = 0; i < red->numRouters; i++) {
+        tabla[i].destino = i;
+        tabla[i].costo = res->distancia[i];
+
+        if (i == j) {
+            tabla[i].costo = 0;
+            tabla[i].siguienteSalto = j;
+        } else if (res->distancia[i] == INF) {
+            tabla[i].costo = INF;
+            tabla[i].siguienteSalto = -1;
+        } else {
+            int actual = i;
+            while (res->predecesor[actual] != j && res->predecesor[actual] != -1) {
+                actual = res->predecesor[actual];
+            }
+            tabla[i].siguienteSalto = actual;
+        }
+    }
+    return 0;
+}
+int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
+        char routerorigen[MAX_NOMBRE], routerdestino[MAX_NOMBRE];
+        int origen;
+        int destino;
+        ResultadoDijkstra res;
+        memset(&res, 0, sizeof(ResultadoDijkstra));
+        printf("Desde que router desea enviar el paquete?\n");
+        if(fgets(routerorigen, MAX_NOMBRE, stdin)!=NULL){
+            routerorigen[strcspn(routerorigen, "\n")]='\0';
+        }
+        printf("A que router desea enviar el paquete?\n");
+        if(fgets(routerdestino, MAX_NOMBRE, stdin)!=NULL){
+            routerdestino[strcspn(routerdestino, "\n")]='\0';
+        }
+        origen=buscar_Router(red, routerorigen);
+        destino=buscar_Router(red, routerdestino);
+        if(dijkstra_paraCargaManual(red, origen, &res)!=0){
+            printf("Error en Dijkstra.");
+            return 1;
+        }else{
+        EntradaRuta tabla[MAX_ROUTERS];
+        construirTablaRutas_paraRedManual(red, origen, &res, &tabla);
+        printf("\n===========================================\n");
+        if(res.distancia[destino]==INF){
+            printf("No hay ruta posible al paquete %s.", red->nombres[destino]);
+        }else{
+            printf("Paquete enviado de %s a %s.\n", red->nombres[origen], red->nombres[destino]);
+            printf("Costo del paquete: %d", tabla[destino].costo);
+            printf("\n===========================================\n");
+        }
+        }
+
+    return 0;
+}
+
+
+void mostrarTablaRutas_deredManual(Red *red, EntradaRuta *tabla, int origen){
+
+    for (int i = 0; i < red->numRouters; i++) {
+        if (tabla[i].costo == 0) {
+            origen = i;
+            break;
+        }
+    }
+        printf("\n=======================================================\n");
+        printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
+        printf("=======================================================\n");
+        printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Router previo)");
+        printf("-------------------------------------------------------\n");
+        for(int i=0; i<red->numRouters; i++){
+            printf("Router %-8s    ", red->nombres[tabla[i].destino]);
+            if (tabla[i].costo == INF) {
+            printf("%-15s %-20s\n", "Desconectado", "Ninguna");
+        } else {
+            printf("%-15d", tabla[i].costo);
+            if(i==origen){
+
+            printf(" %-30s \n", "Ninguno -Origen-");
+            }else{
+                int j=i;
+                while(tabla[j].destino==origen){
+                    printf("Desde: %s -> %s \n", "Ninguno", red->nombres[tabla[j].siguienteSalto]);
+                    j++;
+                }
+            printf("Desde: %s -> %s \n", red->nombres[origen], red->nombres[tabla[j].destino]);
+
+            }
+        }
+    }
+     printf("\n===================================================================\n");
+
+    printf("RUTA FINAL OPTIMIZADA:\n");
+    printf("\n===================================================================\n");
+    for(int i=0; i<red->numRouters; i++){
+        printf("Desde %s - > %s con costo %d\n", red->nombres[tabla[i].siguienteSalto], red->nombres[tabla[i].destino], tabla[i].costo);
+        if(tabla[i].costo==INF){
+        printf("\nNo hay ruta posible a %s\n", red->nombres[tabla[i].destino]);
         }
     }
     printf("\n===================================================================\n");
 }
 
-int  simularEnvioPaquete(Red *red, int origen, int destino, ResultadoDijkstra *res){
-        if(dijkstra(red, origen, res)!=0){
-            printf("Error en Dijkstra.");
-            return 1;
-        }else{
-        EntradaRuta tabla[red->numRouters];
-        construirTablaRutas(red, origen, res, &tabla);
-        printf("\n===========================================\n");
-        if(res->distancia[destino]==INF){
-            printf("No hay ruta posible al paquete %s.", res->nodo[destino]);
-        }else{
-            printf("Paquete enviado de %s a %s.\n", red->nombres[origen], red->nombres[destino]);
-            printf("Costo del paquete: %d", res->distancia[destino]);
-            printf("\n===========================================\n");
-        }
-        }
-    return 0;
-}

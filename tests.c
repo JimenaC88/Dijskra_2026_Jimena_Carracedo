@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include "tests.h"
 #include "dijkstra.h"
 #include "enrutamiento.h"
@@ -19,7 +19,7 @@ static void reportar(const char *nombre, int ok, const char *detalle) {
 static int eq(int a, int b) { return a == b; }
 
 /* ---------------- Caso 1: red lineal ---------------- */
-/*static void test_red_lineal(void) {
+static void test_red_lineal(void) {
     printf("\n--- Caso 1: Red lineal ---\n");
     Red red;
     inicializarRed(&red, 4);
@@ -41,7 +41,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Caso 2: múltiples caminos ---------------- */
-/*static void test_multiples_caminos(void) {
+static void test_multiples_caminos(void) {
     printf("\n--- Caso 2: Múltiples caminos ---\n");
     Red red;
     inicializarRed(&red, 3);
@@ -62,7 +62,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Caso 3: red desconectada ---------------- */
-/*static void test_red_desconectada(void) {
+static void test_red_desconectada(void) {
     printf("\n--- Caso 3: Red desconectada ---\n");
     Red red;
     inicializarRed(&red, 5);
@@ -81,7 +81,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Caso 4: origen == destino ---------------- */
-/*static void test_origen_igual_destino(void) {
+static void test_origen_igual_destino(void) {
     printf("\n--- Caso 4: Origen == Destino ---\n");
     Red red;
     inicializarRed(&red, 3);
@@ -97,7 +97,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Caso 5: red con ciclo ---------------- */
-/*static void test_red_con_ciclo(void) {
+static void test_red_con_ciclo(void) {
     printf("\n--- Caso 5: Red con ciclo ---\n");
     Red red;
     inicializarRed(&red, 4);
@@ -116,7 +116,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Caso 6: nodo inexistente / validaciones ---------------- */
-/*static void test_nodo_inexistente(void) {
+static void test_nodo_inexistente(void) {
     printf("\n--- Caso 6: Nodo inexistente y validaciones ---\n");
     Red red;
     inicializarRed(&red, 3);
@@ -140,7 +140,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Extra 1: topología del enunciado ---------------- */
-/*static void test_topologia_enunciado(void) {
+static void test_topologia_enunciado(void) {
     printf("\n--- Extra 1: Topología del enunciado ---\n");
     Red red;
     cargarTopologiaEjemplo(&red);
@@ -161,7 +161,7 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Extra 2: simetría no dirigida ---------------- */
-/*static void test_simetria(void) {
+static void test_simetria(void) {
     printf("\n--- Extra 2: Simetría ---\n");
     Red red;
     inicializarRed(&red, 4);
@@ -176,14 +176,13 @@ static int eq(int a, int b) { return a == b; }
 
     reportar("R1->R4 == R4->R1",
              eq(a.distancia[3], b.distancia[0]), "distintos");
-    reportar("R1->R3 == R3->R1",
-             eq(a.distancia[2], b.distancia[2]), "distintos");
+    reportar("R1->R4 == R4->R1 (Simetria cruzada)", eq(a.distancia[3], b.distancia[0]), "distintos");
     reportar("R1->R4 = 9", eq(a.distancia[3], 9), "esperado 9");
 }
 
 /* ---------------- Extra 3: eliminar enlace ---------------- */
-/*static void test_eliminar_enlace(void) {
-    printf("\n--- Extra 3: Eliminación de enlace ---\n");
+static void test_eliminar_enlace(void) {
+    printf("\n--- Extra 3: Eliminacion de enlace ---\n");
     Red red;
     inicializarRed(&red, 3);
     agregarEnlace(&red, 0, 1, 1);
@@ -204,11 +203,11 @@ static int eq(int a, int b) { return a == b; }
 }
 
 /* ---------------- Punto de entrada ---------------- */
-/*int ejecutarTodasLasPruebas(void) {
+int ejecutarTodasLasPruebas(void) {
     g_total = 0; g_fallos = 0;
 
     printf("\n============================================\n");
-    printf("      BATERÍA DE PRUEBAS AUTOMÁTICAS\n");
+    printf("      BATERIA DE PRUEBAS AUTOMATICAS\n");
     printf("============================================\n");
 
     test_red_lineal();
@@ -227,4 +226,4 @@ static int eq(int a, int b) { return a == b; }
            (g_fallos == 0) ? "TODAS LAS PRUEBAS PASARON" : "HAY FALLOS");
     printf("============================================\n\n");
     return g_fallos;
-}*/
+}

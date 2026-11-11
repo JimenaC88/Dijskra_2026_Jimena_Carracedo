@@ -13,7 +13,10 @@ static void limpiarBuffer(void) {
 
 static int leerEntero(const char *msg, int *out) {
     printf("%s", msg);
-    if (scanf("%d", out) != 1) { limpiarBuffer(); return -1; }
+    if (scanf("%d", out) != 1) {
+            limpiarBuffer();
+    return -1;
+    }
     limpiarBuffer();
     return 0;
 }
@@ -28,6 +31,18 @@ static void mostrarMenu(void) {
     printf("5. Calcular tabla de rutas desde un router\n");
     printf("6. Simular envio de paquete\n");
     printf("7. Ejecutar pruebas automaticas\n");
+    printf("8. Carga manual de datos\n");
+    printf("0. Salir\n");
+    printf("Opcion: ");
+}
+static void mostrarMenu1(void) {
+    printf("\n===== SIMULADOR DE ENRUTAMIENTO - DIJKSTRA =====\n");
+    printf("1. Agregar enlace manualmente\n");
+    printf("2. Mostrar topologia actual\n");
+    printf("3. Calcular tabla de rutas desde un router\n");
+    printf("4. Simular envio de paquete\n");
+    printf("5. Ejecutar pruebas automaticas\n");
+    printf("6. Carga manual de datos\n");
     printf("0. Salir\n");
     printf("Opcion: ");
 }
@@ -35,7 +50,10 @@ static void mostrarMenu(void) {
 static void opcionCargarArchivo(Red *red) {
     char ruta[MAX_LINEA];
     printf("Ruta del archivo: ");
-    if (scanf("%255s", ruta) != 1) { limpiarBuffer(); return; }
+    if (scanf("%255s", ruta) != 1) {
+            limpiarBuffer();
+    return;
+    }
     limpiarBuffer();
 
     if (cargarTopologiaDesdeArchivo(red, ruta) == 0)
@@ -48,7 +66,7 @@ int buscar_Router(Red *red, char nombre[]){
     for(int k=0; k<red->numRouters; k++){
             if(strcmp(red->nombres[k], nombre)==0){
                 i=k;
-                break;
+                return i;
             }
         }
     while(i<0){
@@ -61,31 +79,107 @@ int buscar_Router(Red *red, char nombre[]){
     }
     return i;
 }
-static void opcionAgregarEnlace(Red *red) {
-    if (red->numRouters == 0) {
-            printf("Primero cargue una topologia.\n");
-            return;
-    }
-    int i=-1, j=-1, c;
+int agregarEnlaceaRedCargadaManualmente(Red *red){
     printf("Ingrese el nombre del primer router al cual desea cambiarle el costo:\n");
     char nombre[MAX_NOMBRE];
 
     if(fgets(nombre, MAX_NOMBRE, stdin)!=NULL){
             nombre[strcspn(nombre, "\n")]='\0';
     }
-    i=buscar_Router(red, nombre);
+    int i=buscar_Router(red, nombre);
     printf("Ingrese el nombre del router hacia el cual desea modificarle el costo: \n");
     if(fgets(nombre, MAX_NOMBRE, stdin)!=NULL){
             nombre[strcspn(nombre, "\n")]='\0';
     }
-    j=buscar_Router(red, nombre);
-    if (leerEntero("Costo: ", &c) != 0) return;
-
-    if (agregarEnlace(red, i, j, c) == 0){
-        printf("Enlace %s-%s agregado (costo %d).\n", red->nombres[i], red->nombres[j], c);
-    }else{
-        printf("Error: indices invalidos, costo <= 0 o enlace ya existente.\n");
+    int j=buscar_Router(red, nombre);
+    if (red == NULL || red->numRouters <= 0){
+            return -1;
     }
+    if (i < 0 || i >= red->numRouters || j < 0 || j >= red->numRouters) return -1;
+
+    if (i == j){
+            return -1;
+    }
+    int costo;
+    while(leerEntero("Ingrese el costo de conexion.\n", &costo)!=0){
+         printf("Ingrese dato valido.\n");
+         continue;
+    }
+    if(costo <0){
+        return -1;
+    }
+    if (costo == 0){
+            return -1;
+    }
+    if (red->matriz[i][j] != INF && red->matriz[i][j] != 0){
+            return -1;
+    }
+    red->matriz[i][j] = costo;
+    red->matriz[j][i] = red->matriz[i][j]
+    ;
+    return 0;
+}
+int agregarEnlace(Red *red, int i, int j, int costo) {
+    if (red == NULL || red->numRouters <= 0){
+            return -1;
+    }
+    if (i < 0 || i >= red->numRouters || j < 0 || j >= red->numRouters) return -1;
+
+    if (i == j){
+            return -1;
+    }
+    /*printf("Ingrese el nuevo costo entre los routers\n");
+    scanf("%d", &costo);*/
+    if(costo <0){
+        return -1;
+    }
+    if (costo == 0){
+            return -1;
+    }
+    if (red->matriz[i][j] != INF && red->matriz[i][j] != 0){
+            return -1;
+    }
+    red->matriz[i][j] = costo;
+    red->matriz[j][i] = red->matriz[i][j];
+    return 0;
+}
+int eliminarEnlace(Red *red, int i, int j) {
+
+    if (red == NULL || i < 0 || i >= red->numRouters || j < 0 || j >= red->numRouters) {
+        return -1;
+    }
+    if (red->matriz[i][j] == INF){
+            return -1;
+    }
+    red->matriz[i][j] = INF;
+    red->matriz[j][i] = INF;
+    return 0;
+}
+
+static void opcionTablaRutas_paraRedConCargaManual(Red *red) {
+    if (red->numRouters == 0) {
+            printf("Primero cargue una topologia.\n");
+            return;
+    }
+    ResultadoDijkstra res;
+    memset(&res, 0, sizeof(ResultadoDijkstra));
+    char router_inicial[MAX_NOMBRE];
+    printf("Ingrese el nombre del router desde el cual quiere partir:\n");
+    if(fgets(router_inicial, MAX_NOMBRE, stdin)!=NULL){
+        router_inicial[strcspn(router_inicial, "\n")]='\0';
+    }
+    int origen=buscar_Router(red, router_inicial);
+    if (dijkstra_paraCargaManual(red, origen, &res) != 0) {
+            printf("Error en Dijkstra.\n");
+            return;
+    }
+
+
+
+    EntradaRuta tabla;
+    construirTablaRutas_paraRedManual(red, origen, &res, &tabla);
+    mostrarTablaRutas_deredManual(red, &tabla, origen);
+
 }
 
 static void opcionTablaRutas(Red *red) {
@@ -110,10 +204,11 @@ static void opcionTablaRutas(Red *red) {
 
     EntradaRuta *tabla = (EntradaRuta *)malloc(red->numRouters * sizeof(EntradaRuta));
     construirTablaRutas(red, origen, &res, tabla);
-    mostrarTablaRutas(red, tabla, origen);
+    mostrarTablaRutas(red, tabla);
+    free(tabla);
 }
 
-/*static void opcionSimularPaquete(Red *red) {
+static void opcionSimularPaquete(Red *red) {
     if (red->numRouters == 0) {
             printf("Primero cargue una topologia.\n");
             return;
@@ -138,28 +233,27 @@ static void opcionTablaRutas(Red *red) {
     ResultadoDijkstra res;
     dijkstra(red, o, &res);
     simularEnvioPaquete(red, o, d, &res);
-}*/
+}
 
-int main(/*int argc, char *argv[]*/) {
-    /* Modo no interactivo: solo pruebas (útil para CI / make test) */
-    //if (argc > 1 && strcmp(argv[1], "--test") == 0)
-        //return ejecutarTodasLasPruebas();
+int main(int argc, char *argv[]) {
+     //Modo no interactivo: solo pruebas (útil para CI / make test) */
+    if (argc > 1 && strcmp(argv[1], "--test") == 0)
+        return ejecutarTodasLasPruebas();
 
     Red red;
+    Red *redmanual=(Red*)malloc(sizeof(Red));
+    if(redmanual==NULL){
+        printf("Error al asignar memoria para garga manual\n");
+    }
 
-    //inicializarRed(&red, 3);
-    int origen=0, destino=0;
-    char or[MAX_NOMBRE], des[MAX_NOMBRE];
-    ResultadoDijkstra res;
     int opcion;
+    int opcion_manual;
     do {
         mostrarMenu();
-        if (scanf("%d", &opcion) != 1) {
-                limpiarBuffer();
+        if(leerEntero("Ingrese la ocion elegida\n", &opcion)!=0||opcion<0||opcion>8){
+            printf("Ingrese una opcion valida\n");
             continue;
-        }
-        limpiarBuffer();
-
+        };
         switch (opcion) {
             case 1: opcionCargarArchivo(&red);
                     break;
@@ -167,7 +261,7 @@ int main(/*int argc, char *argv[]*/) {
                 cargarTopologiaEjemplo(&red);
                 printf("Topologia de ejemplo cargada (%d routers).\n", red.numRouters);
                 break;
-            case 3: opcionAgregarEnlace(&red);
+            case 3: agregarEnlace(&red, red.numRouters, red.numRouters, INF);
                     break;
             case 4: mostrarTopologia(&red);
                     break;
@@ -175,28 +269,58 @@ int main(/*int argc, char *argv[]*/) {
                 opcionTablaRutas(&red);
                 break;
             case 6:
-                printf("Ingrese el nombre del router de origen:\n");
-                if(fgets(or, MAX_NOMBRE, stdin)!=NULL){
-                        or[strcspn(or, "\n")]='\0';
-                }
-                printf("Ingrese el nombre del router de destino:\n");
-                if(fgets(des, MAX_NOMBRE, stdin)!=NULL){
-                        des[strcspn(des, "\n")]='\0';
-                }
-                origen=buscar_Router(&red, or);
-                destino=buscar_Router(&red, des);
-                simularEnvioPaquete(&red, origen, destino, &res);
+                opcionSimularPaquete(&red);
             break;
-            /*case 7: {
+                case 7:{
                 int fallos = ejecutarTodasLasPruebas();
                 printf("Pruebas fallidas: %d\n", fallos);
                 break;
-            }*/
-            case 0: printf("Saliendo...\n"); break;
-            default: printf("Opcion invalida.\n"); break;
+                }
+            case 8:
+                cargaManualdeDatos(redmanual);
+                do{
+
+                mostrarMenu1();
+
+                while(leerEntero("Ingrese la opcion para la red cargada manual mente\n", &opcion_manual)!=0){
+                    printf("Ingrese una opcion valida\n");
+                    continue;
+                }
+                switch(opcion_manual){
+                 case 1:
+                    agregarEnlaceaRedCargadaManualmente(redmanual);
+                    break;
+                 case 2:
+                    mostrarTopologia_deRedCargada(redmanual);
+                    break;
+                 case 3:
+                    opcionTablaRutas_paraRedConCargaManual(redmanual);
+                    break;
+                 case 4:
+                    simularEnvioPaquete_paraRed_CargadaManualmente(redmanual);
+                    break;
+                 case 5:
+                    ejecutarTodasLasPruebas();
+                    break;
+                 case 6:
+                     free(redmanual);
+                     redmanual=(Red*)malloc(MAX_ROUTERS*sizeof(Red));
+                     cargaManualdeDatos(redmanual);
+                     break;
+                 case 0:
+                    free(redmanual);
+                    printf("Saliendo de la red por carga manual\n");
+                    break;
+                    default: printf("Opcion invalida.\n");
+                    break;
+                }
+                }while(opcion_manual!=0);
+            case 0: printf("Saliendo...\n");
+            break;
+            default: printf("Opcion invalida.\n");
+            break;
         }
     } while (opcion != 0);
 
-    liberarRed(&red);
     return 0;
 }

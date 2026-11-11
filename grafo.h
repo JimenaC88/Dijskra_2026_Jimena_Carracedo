@@ -12,16 +12,16 @@
 typedef struct {
     int  numRouters;
     int  matriz[MAX_ROUTERS][MAX_ROUTERS];
-    char *nombres[MAX_ROUTERS];
+    char nombres[MAX_ROUTERS][MAX_NOMBRE];
 } Red;
 
 int  inicializarRed(Red *red, int n);
-int  setNombreRouter(Red *red, int idx, char *nombre);
+int  setNombreRouter(Red *red, int idx, const char *nombre);
 int  agregarEnlace(Red *red, int i, int j, int costo);
 int  eliminarEnlace(Red *red, int i, int j);
 int  cargarTopologiaDesdeArchivo(Red *red, const char *ruta);
 int  cargarTopologiaEjemplo(Red *red);
-void mostrarTopologia(Red *red);
+void mostrarTopologia(const Red *red);
 void liberarRed(Red *red);
 
 #endif /* GRAFO_H */
