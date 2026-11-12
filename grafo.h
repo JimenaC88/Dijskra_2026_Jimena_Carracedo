@@ -23,5 +23,7 @@ int  cargarTopologiaDesdeArchivo(Red *red, const char *ruta);
 int  cargarTopologiaEjemplo(Red *red);
 void mostrarTopologia(const Red *red);
 void liberarRed(Red *red);
+int  cargaManualdeDatos(Red *red);
+void mostrarTopologia_deRedCargada(Red *red);
 
 #endif /* GRAFO_H */

@@ -170,16 +170,16 @@ static void opcionTablaRutas_paraRedConCargaManual(Red *red) {
     }
     int origen=buscar_Router(red, router_inicial);
     if (dijkstra_paraCargaManual(red, origen, &res) != 0) {
-            printf("Error en Dijkstra.\n");
+            printf("Error en Dijkstra para Carga manual.\n");
             return;
     }
 
 
 
-    EntradaRuta tabla;
-    construirTablaRutas_paraRedManual(red, origen, &res, &tabla);
-    mostrarTablaRutas_deredManual(red, &tabla, origen);
-
+    EntradaRuta *tabla=(EntradaRuta*)malloc(MAX_ROUTERS*sizeof(EntradaRuta));
+    construirTablaRutas_paraRedManual(red, origen, &res, tabla);
+    mostrarTablaRutas_deredManual(red, tabla, &res, origen);
+    free(tabla);
 }
 
 static void opcionTablaRutas(Red *red) {
@@ -204,7 +204,6 @@ static void opcionTablaRutas(Red *red) {
 
     EntradaRuta *tabla = (EntradaRuta *)malloc(red->numRouters * sizeof(EntradaRuta));
     construirTablaRutas(red, origen, &res, tabla);
-    mostrarTablaRutas(red, tabla);
     free(tabla);
 }
 

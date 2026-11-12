@@ -3,6 +3,7 @@
 #include "enrutamiento.h"
 #include "dijkstra.h"
 #include <string.h>
+
 int  construirTablaRutas(const Red *red, int origen, const ResultadoDijkstra *res, EntradaRuta *tabla){
 
     if (origen < 0 || origen >= red->numRouters) {
@@ -14,7 +15,7 @@ int  construirTablaRutas(const Red *red, int origen, const ResultadoDijkstra *re
 
         if (i == origen) {
             tabla[i].costo = 0;
-            tabla[i].siguienteSalto = origen;
+            tabla[i].destino = origen;
         } else if (res->distancia[i] == INF) {
             tabla[i].costo = INF;
             tabla[i].siguienteSalto = -1;
@@ -109,7 +110,8 @@ int  construirTablaRutas_paraRedManual(Red *red, int j, ResultadoDijkstra *res, 
 
         if (i == j) {
             tabla[i].costo = 0;
-            tabla[i].siguienteSalto = j;
+            tabla[i].destino = j;
+            tabla[i].siguienteSalto = -1;
         } else if (res->distancia[i] == INF) {
             tabla[i].costo = INF;
             tabla[i].siguienteSalto = -1;
@@ -118,7 +120,8 @@ int  construirTablaRutas_paraRedManual(Red *red, int j, ResultadoDijkstra *res, 
             while (res->predecesor[actual] != j && res->predecesor[actual] != -1) {
                 actual = res->predecesor[actual];
             }
-            tabla[i].siguienteSalto = actual;
+            tabla[i].siguienteSalto = (res->predecesor[actual] == j) ? actual : -1;
+
         }
     }
     return 0;
@@ -143,8 +146,8 @@ int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
             printf("Error en Dijkstra.");
             return 1;
         }else{
-        EntradaRuta tabla[MAX_ROUTERS];
-        construirTablaRutas_paraRedManual(red, origen, &res, &tabla);
+        EntradaRuta *tabla=(EntradaRuta*)malloc(MAX_ROUTERS*sizeof(EntradaRuta));
+        construirTablaRutas_paraRedManual(red, origen, &res, tabla);
         printf("\n===========================================\n");
         if(res.distancia[destino]==INF){
             printf("No hay ruta posible al paquete %s.", red->nombres[destino]);
@@ -159,49 +162,69 @@ int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
 }
 
 
-void mostrarTablaRutas_deredManual(Red *red, EntradaRuta *tabla, int origen){
+/*void mostrarTablaRutas_deredManual(Red *red, EntradaRuta *tabla, int origen){
+
+
+    printf("\n=======================================================\n");
+    printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
+    printf("=======================================================\n");
+    printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Siguiente Salto)");
+    printf("-------------------------------------------------------\n");
+    int j=0;
+    for (int i = 0; i < red->numRouters; i++) {
+        printf("Router %-8s ", red->nombres[tabla[i].destino]);
+
+        if (tabla[i].costo == INF) {
+            printf("%-15s %-20s\n", "Desconectado", "Ninguna");
+            j++;
+        } else if (i == origen) {
+            printf("%-15d %-20s\n", tabla[i].costo, "Ninguno (origen)");
+            j++;
+        } else if(j>0){
+
+            printf("%-15d %-25s\n", tabla[i].costo, red->nombres[tabla[j-1].destino]);
+            j++;
+    }else{
+            j++;
+            printf("%-15d %-25s\n", tabla[i].costo, red->nombres[tabla[j-1].destino]);
+
+    }
+    }
+
+    printf("=======================================================\n");
+}*/
+static void imprimirCamino(const Red *red, const ResultadoDijkstra *res, int origen, int destino) {
+    if (destino == origen) {
+        printf("%s", red->nombres[origen]);
+        return;
+    }
+    if (res->predecesor[destino] == -1) {
+        printf("Sin ruta");
+        return;
+    }
+    imprimirCamino(red, res, origen, res->predecesor[destino]);
+    printf(" -> %s", red->nombres[destino]);
+}
+void mostrarTablaRutas_deredManual(Red *red, EntradaRuta *tabla, ResultadoDijkstra *res, int origen) {
+    printf("\n=======================================================\n");
+    printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
+    printf("=======================================================\n");
+    printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Siguiente Salto)");
+    printf("-------------------------------------------------------\n");
 
     for (int i = 0; i < red->numRouters; i++) {
-        if (tabla[i].costo == 0) {
-            origen = i;
-            break;
-        }
-    }
-        printf("\n=======================================================\n");
-        printf("TABLA DE ENRUTAMIENTO OSPF PARA EL ROUTER LOCAL: %-8s\n", red->nombres[origen]);
-        printf("=======================================================\n");
-        printf("%-12s %-15s %-20s\n", "Destino", "Costo Total", "Ruta Optima (Router previo)");
-        printf("-------------------------------------------------------\n");
-        for(int i=0; i<red->numRouters; i++){
-            printf("Router %-8s    ", red->nombres[tabla[i].destino]);
-            if (tabla[i].costo == INF) {
+        printf("Router %-8s ", red->nombres[tabla[i].destino]);
+
+        if (tabla[i].costo == INF) {
             printf("%-15s %-20s\n", "Desconectado", "Ninguna");
+        } else if (i == origen) {
+            printf("%-15d %-20s\n", tabla[i].costo, "Ninguno (origen)");
         } else {
-            printf("%-15d", tabla[i].costo);
-            if(i==origen){
-
-            printf(" %-30s \n", "Ninguno -Origen-");
-            }else{
-                int j=i;
-                while(tabla[j].destino==origen){
-                    printf("Desde: %s -> %s \n", "Ninguno", red->nombres[tabla[j].siguienteSalto]);
-                    j++;
-                }
-            printf("Desde: %s -> %s \n", red->nombres[origen], red->nombres[tabla[j].destino]);
-
-            }
+            printf("%-15d ", tabla[i].costo);
+            imprimirCamino(red, res, origen, i);
+            printf("\n");
         }
     }
-     printf("\n===================================================================\n");
 
-    printf("RUTA FINAL OPTIMIZADA:\n");
-    printf("\n===================================================================\n");
-    for(int i=0; i<red->numRouters; i++){
-        printf("Desde %s - > %s con costo %d\n", red->nombres[tabla[i].siguienteSalto], red->nombres[tabla[i].destino], tabla[i].costo);
-        if(tabla[i].costo==INF){
-        printf("\nNo hay ruta posible a %s\n", red->nombres[tabla[i].destino]);
-        }
-    }
-    printf("\n===================================================================\n");
+    printf("=======================================================\n");
 }
-

@@ -40,6 +40,7 @@ int dijkstra_paraCargaManual(Red *red, int indice, ResultadoDijkstra *res){
             if(res->visitado[k]!=1&&red->matriz[v][k]!=INF&&res->distancia[v]!=INF&&res->distancia[v]+red->matriz[v][k]<res->distancia[k]){
                 res->distancia[k]=res->distancia[v]+red->matriz[v][k];
                 res->predecesor[k]=v;
+
             }
         }
     }

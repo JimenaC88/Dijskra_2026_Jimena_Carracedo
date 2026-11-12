@@ -161,6 +161,7 @@ void mostrarTopologia_deRedCargada(Red *red){
             printf("\n");
         }
     printf("=======================================================\n");
+
 }
 
 

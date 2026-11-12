@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1794427169 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\main.c
+1794505117 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -8,12 +8,12 @@
 	"enrutamiento.h"
 	"tests.h"
 
-1794362897 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.h
+1794481939 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.h
 
 1794369870 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.h
 	"grafo.h"
 
-1794416403 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.h
+1794505071 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.h
 	"dijkstra.h"
 
 1793310935 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.h
@@ -31,7 +31,7 @@
 	<stdbool.h>
 	"grafo.h"
 
-1794419440 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.c
+1794483389 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -39,7 +39,7 @@
 	"grafo.h"
 	"dijkstra.h"
 
-1794429435 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.c
+1794505275 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.c
 	<stdio.h>
 	<stdlib.h>
 	"enrutamiento.h"
