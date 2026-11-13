@@ -134,6 +134,10 @@ int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
             return 1;
         }else{
         EntradaRuta *tabla=(EntradaRuta*)malloc(MAX_ROUTERS*sizeof(EntradaRuta));
+        if(tabla==NULL){
+            printf("Error al asignar memoria para la tabla.");
+            return 1;
+        }
         construirTablaRutas(red, origen, &res, tabla);
         printf("\n===========================================\n");
         if(res.distancia[destino]==INF){
@@ -147,7 +151,6 @@ int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
         printf("RUTA COMPLETA REQUERIDA:\n");
         printf("========================\n");
         imprimirCamino(red, &res, origen, destino);
-
     return 0;
 }
 

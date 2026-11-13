@@ -174,6 +174,7 @@ int main(int argc, char *argv[]) {
         return ejecutarTodasLasPruebas();
 
     Red red;
+    inicializarRed(&red, 0);
     Red *redmanual=(Red*)malloc(sizeof(Red));
     if(redmanual==NULL){
         printf("Error al asignar memoria para garga manual\n");
@@ -237,7 +238,7 @@ int main(int argc, char *argv[]) {
                     break;
                  case 6:
                      liberarRed(redmanual);
-                     redmanual=(Red*)malloc(MAX_ROUTERS*sizeof(Red));
+                     redmanual=(Red*)malloc(sizeof(Red));
                      cargaManualdeDatos(redmanual);
                      break;
                  case 0:
@@ -254,6 +255,8 @@ int main(int argc, char *argv[]) {
             break;
         }
     } while (opcion != 0);
+
+        liberarRed(redmanual);
 
     return 0;
 }

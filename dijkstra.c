@@ -19,8 +19,6 @@ int minima_distancia(const Red *red, const ResultadoDijkstra *res){
 int dijkstra(const Red *red, int indice, ResultadoDijkstra *res){
     if (red == NULL || res == NULL) return -1;
     if (indice < 0 || indice >= red->numRouters) return -1;
-    if (indice < 0 || indice >= red->numRouters) return -1;
-    if (indice < 0 || indice >= red->numRouters) return -1;
     for(int i=0; i<red->numRouters; i++){
         res->visitado[i]=0;
         res->distancia[i]=INF;
