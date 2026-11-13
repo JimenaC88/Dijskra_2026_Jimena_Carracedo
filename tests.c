@@ -222,6 +222,13 @@ static void prueba_de_cargaManualdeDatos2(void){
       inicializarRed(&red0, 0);
       reportar("No pueden agregarse enlaces a una red sin routers", eq(agregarEnlaceaRedCargadaManualmente(&red0), -1), "esperando -1");
 }
+static void prueba_de_cargaManualdeDatos3(void){
+      printf("\n--- Extra 5: Error  ---\n");
+      Red red;
+      inicializarRed(&red, 1);
+      const char *nombre1="Un nombre muy largo para un router";
+      reportar("No pueden asignarse nombres con mas caracteres que MAX_NOMBRE", eq(setNombreRouter(&red, 0, nombre1) , -1), "esperando -1");
+}
 /* ---------------- Punto de entrada ---------------- */
 int ejecutarTodasLasPruebas(void) {
     g_total = 0; g_fallos = 0;
@@ -241,6 +248,7 @@ int ejecutarTodasLasPruebas(void) {
     test_eliminar_enlace();
     prueba_de_cargaManualdeDatos();
     prueba_de_cargaManualdeDatos2();
+    prueba_de_cargaManualdeDatos3();
     printf("\n============================================\n");
     printf("  RESUMEN: %d pruebas, %d fallos\n", g_total, g_fallos);
     printf("  RESULTADO: %s\n",
