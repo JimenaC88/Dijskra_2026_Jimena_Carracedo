@@ -2,7 +2,8 @@
 #include "tests.h"
 #include "dijkstra.h"
 #include "enrutamiento.h"
-
+#include "carga.h"
+#include "grafo.h"
 static int g_total  = 0;
 static int g_fallos = 0;
 
@@ -203,7 +204,24 @@ static void test_eliminar_enlace(void) {
     reportar("eliminar inexistente = -1",
              eq(eliminarEnlace(&red, 0, 1), -1), "esperado -1");
 }
-
+/* ---------------- Extra 4: Nombre fuera del rango de la red ---------------- */
+static void prueba_de_cargaManualdeDatos(void){
+      printf("\n--- Extra 4: Indice fuera de rango en la carga manual de datos ---\n");
+      Red red;
+      inicializarRed(&red, 3);
+      setNombreRouter(&red, 0, "Eva");
+      setNombreRouter(&red, 1, "PcBox");
+      setNombreRouter(&red, 2, "Assus");
+      reportar("No pueden asignarse nombres fuera del rango de la red", eq(setNombreRouter(&red, 3, "HP"), 1), "esperando 1");
+}
+static void prueba_de_cargaManualdeDatos2(void){
+      printf("\n--- Extra 5: Error  ---\n");
+      Red *red=NULL;
+      reportar("No pueden agregarse enlaces a una red NULL", eq(agregarEnlaceaRedCargadaManualmente(red) , -1), "esperando -1");
+      Red red0;
+      inicializarRed(&red0, 0);
+      reportar("No pueden agregarse enlaces a una red sin routers", eq(agregarEnlaceaRedCargadaManualmente(&red0), -1), "esperando -1");
+}
 /* ---------------- Punto de entrada ---------------- */
 int ejecutarTodasLasPruebas(void) {
     g_total = 0; g_fallos = 0;
@@ -221,7 +239,8 @@ int ejecutarTodasLasPruebas(void) {
     test_topologia_enunciado();
     test_simetria();
     test_eliminar_enlace();
-
+    prueba_de_cargaManualdeDatos();
+    prueba_de_cargaManualdeDatos2();
     printf("\n============================================\n");
     printf("  RESUMEN: %d pruebas, %d fallos\n", g_total, g_fallos);
     printf("  RESULTADO: %s\n",

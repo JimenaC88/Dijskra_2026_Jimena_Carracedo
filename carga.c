@@ -20,6 +20,10 @@ static int leerEntero(const char *msg, int *out) {
 }
 
 int  setNombreRouter(Red *red, int idx, const char *nombre){
+     if(idx<0||idx>=red->numRouters){
+        printf("Indice fuera de rango.");
+        return 1;
+     }
      strcpy(red->nombres[idx], nombre);
      red->nombres[idx][strcspn(red->nombres[idx], "\n")]='\0';
      return 0;
@@ -75,6 +79,9 @@ int  cargaManualdeDatos(Red *red){
     return 0;
 }
 int agregarEnlaceaRedCargadaManualmente(Red *red){
+    if (red == NULL || red->numRouters <= 0){
+            return -1;
+    }
     printf("Ingrese el nombre del primer router al cual desea cambiarle el costo:\n");
     char nombre[MAX_NOMBRE];
 
@@ -87,9 +94,7 @@ int agregarEnlaceaRedCargadaManualmente(Red *red){
             nombre[strcspn(nombre, "\n")]='\0';
     }
     int j=buscar_Router(red, nombre);
-    if (red == NULL || red->numRouters <= 0){
-            return -1;
-    }
+
     if (i < 0 || i >= red->numRouters || j < 0 || j >= red->numRouters) return -1;
 
     if (i == j){
