@@ -156,31 +156,6 @@ int eliminarEnlace(Red *red, int i, int j) {
     return 0;
 }
 
-static void opcionTablaRutas_paraRedConCargaManual(Red *red) {
-    if (red->numRouters == 0) {
-            printf("Primero cargue una topologia.\n");
-            return;
-    }
-    ResultadoDijkstra res;
-    memset(&res, 0, sizeof(ResultadoDijkstra));
-    char router_inicial[MAX_NOMBRE];
-    printf("Ingrese el nombre del router desde el cual quiere partir:\n");
-    if(fgets(router_inicial, MAX_NOMBRE, stdin)!=NULL){
-        router_inicial[strcspn(router_inicial, "\n")]='\0';
-    }
-    int origen=buscar_Router(red, router_inicial);
-    if (dijkstra_paraCargaManual(red, origen, &res) != 0) {
-            printf("Error en Dijkstra para Carga manual.\n");
-            return;
-    }
-
-
-
-    EntradaRuta *tabla=(EntradaRuta*)malloc(MAX_ROUTERS*sizeof(EntradaRuta));
-    construirTablaRutas_paraRedManual(red, origen, &res, tabla);
-    mostrarTablaRutas_deredManual(red, tabla, &res, origen);
-    free(tabla);
-}
 
 static void opcionTablaRutas(Red *red) {
     if (red->numRouters == 0) {
@@ -200,10 +175,9 @@ static void opcionTablaRutas(Red *red) {
             return;
     }
 
-
-
     EntradaRuta *tabla = (EntradaRuta *)malloc(red->numRouters * sizeof(EntradaRuta));
     construirTablaRutas(red, origen, &res, tabla);
+    mostrarTablaRutas(red, tabla);
     free(tabla);
 }
 
@@ -290,10 +264,10 @@ int main(int argc, char *argv[]) {
                     agregarEnlaceaRedCargadaManualmente(redmanual);
                     break;
                  case 2:
-                    mostrarTopologia_deRedCargada(redmanual);
+                    mostrarTopologia(redmanual);
                     break;
                  case 3:
-                    opcionTablaRutas_paraRedConCargaManual(redmanual);
+                    opcionTablaRutas(redmanual);
                     break;
                  case 4:
                     simularEnvioPaquete_paraRed_CargadaManualmente(redmanual);
@@ -302,12 +276,12 @@ int main(int argc, char *argv[]) {
                     ejecutarTodasLasPruebas();
                     break;
                  case 6:
-                     free(redmanual);
+                     liberarRed(redmanual);
                      redmanual=(Red*)malloc(MAX_ROUTERS*sizeof(Red));
                      cargaManualdeDatos(redmanual);
                      break;
                  case 0:
-                    free(redmanual);
+                    liberarRed(redmanual);
                     printf("Saliendo de la red por carga manual\n");
                     break;
                     default: printf("Opcion invalida.\n");

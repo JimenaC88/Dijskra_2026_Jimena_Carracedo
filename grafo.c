@@ -129,7 +129,7 @@ void mostrarTopologia(const Red *red){
               if(red->matriz[i][j]!=INF){
               printf("%d\t", red->matriz[i][j]);
               }else{
-              printf("%s\t", "Desc");
+              printf("%s\t", "INF");
               }
             }
             printf("\n");
@@ -162,6 +162,9 @@ void mostrarTopologia_deRedCargada(Red *red){
         }
     printf("=======================================================\n");
 
+}
+void liberarRed(Red *red){
+    free(red);
 }
 
 

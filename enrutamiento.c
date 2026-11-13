@@ -29,7 +29,18 @@ int  construirTablaRutas(const Red *red, int origen, const ResultadoDijkstra *re
     }
     return 0;
 }
-
+static void imprimirCamino(const Red *red, const ResultadoDijkstra *res, int origen, int destino) {
+    if (destino == origen) {
+        printf("%s", red->nombres[origen]);
+        return;
+    }
+    if (res->predecesor[destino] == -1) {
+        printf("Sin ruta");
+        return;
+    }
+    imprimirCamino(red, res, origen, res->predecesor[destino]);
+    printf(" -> %s", red->nombres[destino]);
+}
 void mostrarTablaRutas(const Red *red, const EntradaRuta *tabla){
     int origen = 0;
     for (int i = 0; i < red->numRouters; i++) {
@@ -89,6 +100,8 @@ int  simularEnvioPaquete(const Red *red, int origen, int destino, const Resultad
         printf("Paquete local: %s ya es el destino.\n", red->nombres[origen]);
         printf("Costo del paquete: %d", res->distancia[destino]);
         printf("\n===========================================\n");
+
+
         return 0;
     }
 
@@ -96,47 +109,9 @@ int  simularEnvioPaquete(const Red *red, int origen, int destino, const Resultad
     printf("Paquete enviado de %s a %s.\n", red->nombres[origen], red->nombres[destino]);
     printf("Costo del paquete: %d", res->distancia[destino]);
     printf("\n===========================================\n");
-
+    imprimirCamino(red, res, origen, destino);
     return 0;
 
-}
-int  construirTablaRutas_paraRedManual(Red *red, int j, ResultadoDijkstra *res, EntradaRuta *tabla){
-    if (j < 0 || j >= red->numRouters) {
-    return -1;
-    }
-    for (int i = 0; i < red->numRouters; i++) {
-        tabla[i].destino = i;
-        tabla[i].costo = res->distancia[i];
-
-        if (i == j) {
-            tabla[i].costo = 0;
-            tabla[i].destino = j;
-            tabla[i].siguienteSalto = -1;
-        } else if (res->distancia[i] == INF) {
-            tabla[i].costo = INF;
-            tabla[i].siguienteSalto = -1;
-        } else {
-            int actual = i;
-            while (res->predecesor[actual] != j && res->predecesor[actual] != -1) {
-                actual = res->predecesor[actual];
-            }
-            tabla[i].siguienteSalto = (res->predecesor[actual] == j) ? actual : -1;
-
-        }
-    }
-    return 0;
-}
-static void imprimirCamino(const Red *red, const ResultadoDijkstra *res, int origen, int destino) {
-    if (destino == origen) {
-        printf("%s", red->nombres[origen]);
-        return;
-    }
-    if (res->predecesor[destino] == -1) {
-        printf("Sin ruta");
-        return;
-    }
-    imprimirCamino(red, res, origen, res->predecesor[destino]);
-    printf(" -> %s", red->nombres[destino]);
 }
 int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
         char routerorigen[MAX_NOMBRE], routerdestino[MAX_NOMBRE];
@@ -154,12 +129,12 @@ int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red){
         }
         origen=buscar_Router(red, routerorigen);
         destino=buscar_Router(red, routerdestino);
-        if(dijkstra_paraCargaManual(red, origen, &res)!=0){
+        if(dijkstra(red, origen, &res)!=0){
             printf("Error en Dijkstra.");
             return 1;
         }else{
         EntradaRuta *tabla=(EntradaRuta*)malloc(MAX_ROUTERS*sizeof(EntradaRuta));
-        construirTablaRutas_paraRedManual(red, origen, &res, tabla);
+        construirTablaRutas(red, origen, &res, tabla);
         printf("\n===========================================\n");
         if(res.distancia[destino]==INF){
             printf("No hay ruta posible al paquete %s.", red->nombres[destino]);

@@ -10,5 +10,5 @@ typedef struct {
 } ResultadoDijkstra;
 
 int dijkstra(const Red *red, int origen, ResultadoDijkstra *res);
-
+int minima_distancia(const Red *red, const ResultadoDijkstra *res);
 #endif /* DIJKSTRA_H */

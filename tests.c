@@ -171,13 +171,15 @@ static void test_simetria(void) {
     agregarEnlace(&red, 0, 3, 20);
 
     ResultadoDijkstra a, b;
+
     dijkstra(&red, 0, &a);
     dijkstra(&red, 3, &b);
-
-    reportar("R1->R4 == R4->R1",
-             eq(a.distancia[3], b.distancia[0]), "distintos");
-    reportar("R1->R4 == R4->R1 (Simetria cruzada)", eq(a.distancia[3], b.distancia[0]), "distintos");
+    reportar("R1->R4 == R4->R1", eq(a.distancia[3], b.distancia[0]), "distintos");
+    dijkstra(&red, 0, &a);
+    dijkstra(&red, 2, &b);
+    reportar("R1->R3 == R3->R1", eq(a.distancia[2], b.distancia[0]), "distintos");
     reportar("R1->R4 = 9", eq(a.distancia[3], 9), "esperado 9");
+
 }
 
 /* ---------------- Extra 3: eliminar enlace ---------------- */
