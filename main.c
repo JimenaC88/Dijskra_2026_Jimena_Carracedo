@@ -5,6 +5,7 @@
 #include "dijkstra.h"
 #include "enrutamiento.h"
 #include "tests.h"
+#include "carga.h"
 
 static void limpiarBuffer(void) {
     int c;
@@ -79,46 +80,7 @@ int buscar_Router(Red *red, char nombre[]){
     }
     return i;
 }
-int agregarEnlaceaRedCargadaManualmente(Red *red){
-    printf("Ingrese el nombre del primer router al cual desea cambiarle el costo:\n");
-    char nombre[MAX_NOMBRE];
 
-    if(fgets(nombre, MAX_NOMBRE, stdin)!=NULL){
-            nombre[strcspn(nombre, "\n")]='\0';
-    }
-    int i=buscar_Router(red, nombre);
-    printf("Ingrese el nombre del router hacia el cual desea modificarle el costo: \n");
-    if(fgets(nombre, MAX_NOMBRE, stdin)!=NULL){
-            nombre[strcspn(nombre, "\n")]='\0';
-    }
-    int j=buscar_Router(red, nombre);
-    if (red == NULL || red->numRouters <= 0){
-            return -1;
-    }
-    if (i < 0 || i >= red->numRouters || j < 0 || j >= red->numRouters) return -1;
-
-    if (i == j){
-            return -1;
-    }
-    int costo;
-    while(leerEntero("Ingrese el costo de conexion.\n", &costo)!=0){
-         printf("Ingrese dato valido.\n");
-         continue;
-    }
-    if(costo <0){
-        return -1;
-    }
-    if (costo == 0){
-            return -1;
-    }
-    if (red->matriz[i][j] != INF && red->matriz[i][j] != 0){
-            return -1;
-    }
-    red->matriz[i][j] = costo;
-    red->matriz[j][i] = red->matriz[i][j]
-    ;
-    return 0;
-}
 int agregarEnlace(Red *red, int i, int j, int costo) {
     if (red == NULL || red->numRouters <= 0){
             return -1;
@@ -128,8 +90,6 @@ int agregarEnlace(Red *red, int i, int j, int costo) {
     if (i == j){
             return -1;
     }
-    /*printf("Ingrese el nuevo costo entre los routers\n");
-    scanf("%d", &costo);*/
     if(costo <0){
         return -1;
     }
@@ -264,10 +224,10 @@ int main(int argc, char *argv[]) {
                     agregarEnlaceaRedCargadaManualmente(redmanual);
                     break;
                  case 2:
-                    mostrarTopologia(redmanual);
+                    mostrarTopologia_deRedCargada(redmanual);
                     break;
                  case 3:
-                    opcionTablaRutas(redmanual);
+                    opcionTablaRutas_paraRedConCargaManual(redmanual);
                     break;
                  case 4:
                     simularEnvioPaquete_paraRed_CargadaManualmente(redmanual);
