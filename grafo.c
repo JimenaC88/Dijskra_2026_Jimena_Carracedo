@@ -22,10 +22,10 @@ int inicializarRed(Red *red, int cant_routers){
     return 0;
 }
 
-int  cargarTopologiaDesdeArchivo(Red *red, const char *ruta){
+/*int  cargarTopologiaDesdeArchivo(Red *red, const char *ruta){
      printf("Hacer");
      return 0;
-}
+}*/
 
 int cargarTopologiaEjemplo(Red *red) {
 

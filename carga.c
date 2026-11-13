@@ -24,7 +24,7 @@ int  setNombreRouter(Red *red, int idx, const char *nombre){
         printf("Indice fuera de rango.");
         return 1;
      }
-     if(strlen(nombre)>MAX_NOMBRE){
+     if(strlen(nombre)>=MAX_NOMBRE){
         return -1;
      }
      strcpy(red->nombres[idx], nombre);

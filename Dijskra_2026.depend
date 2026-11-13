@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1794540929 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\main.c
+1794587182 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -9,7 +9,7 @@
 	"tests.h"
 	"carga.h"
 
-1794539840 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.h
+1794544350 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.h
 
 1794539197 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.h
 	"grafo.h"
@@ -20,33 +20,35 @@
 
 1793310935 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.h
 
-1794522764 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.c
+1794578980 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\tests.c
 	<stdio.h>
 	"tests.h"
 	"dijkstra.h"
 	"enrutamiento.h"
+	"carga.h"
+	"grafo.h"
 
-1794539986 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.c
+1794581325 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\grafo.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"grafo.h"
 
-1794539304 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.c
+1794542220 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\dijkstra.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"grafo.h"
 	"dijkstra.h"
 
-1794538260 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.c
+1794542243 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\enrutamiento.c
 	<stdio.h>
 	<stdlib.h>
 	"enrutamiento.h"
 	"dijkstra.h"
 	<string.h>
 
-1794540824 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\carga.c
+1794588891 source:c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\carga.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -54,6 +56,6 @@
 	"dijkstra.h"
 	"enrutamiento.h"
 
-1794540979 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\carga.h
+1794542294 c:\users\jime_\onedrive\escritorio\taller\dijskra_2026\dijskra_2026\carga.h
 	"grafo.h"
 

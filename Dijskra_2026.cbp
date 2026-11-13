@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="carga.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="carga.h" />
 		<Unit filename="dijkstra.c">
 			<Option compilerVar="CC" />
 		</Unit>

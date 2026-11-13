@@ -48,7 +48,7 @@ static void mostrarMenu1(void) {
     printf("Opcion: ");
 }
 
-static void opcionCargarArchivo(Red *red) {
+/*static void opcionCargarArchivo(Red *red) {
     char ruta[MAX_LINEA];
     printf("Ruta del archivo: ");
     if (scanf("%255s", ruta) != 1) {
@@ -61,7 +61,7 @@ static void opcionCargarArchivo(Red *red) {
         printf("Topologia cargada desde '%s'.\n", ruta);
     else
         printf("No se pudo cargar la topologia.\n");
-}
+}*/
 int buscar_Router(Red *red, char nombre[]){
     int i=-1;
     for(int k=0; k<red->numRouters; k++){
@@ -175,13 +175,11 @@ int main(int argc, char *argv[]) {
 
     Red red;
     inicializarRed(&red, 0);
-    Red *redmanual=(Red*)malloc(sizeof(Red));
-    if(redmanual==NULL){
-        printf("Error al asignar memoria para garga manual\n");
-    }
+    Red *redmanual=NULL;
 
-    int opcion;
-    int opcion_manual;
+
+    int opcion=0;
+    int opcion_manual=0;
     do {
         mostrarMenu();
         if(leerEntero("Ingrese la ocion elegida\n", &opcion)!=0||opcion<0||opcion>8){
@@ -189,7 +187,7 @@ int main(int argc, char *argv[]) {
             continue;
         };
         switch (opcion) {
-            case 1: opcionCargarArchivo(&red);
+            case 1: //opcionCargarArchivo(&red);
                     break;
             case 2:
                 cargarTopologiaEjemplo(&red);
@@ -211,16 +209,21 @@ int main(int argc, char *argv[]) {
                 break;
                 }
             case 8:
+                redmanual=(Red*)malloc(sizeof(Red));
+                if(redmanual==NULL){
+                    printf("Error al asignar memora para la red de ingreso manual");
+                    opcion=0;
+                }else{
                 cargaManualdeDatos(redmanual);
-                do{
-
-                mostrarMenu1();
-
-                while(leerEntero("Ingrese la opcion para la red cargada manual mente\n", &opcion_manual)!=0){
-                    printf("Ingrese una opcion valida\n");
-                    continue;
                 }
-                switch(opcion_manual){
+                break;
+                mostrarMenu1();
+                do {
+                    mostrarMenu1();
+                    while (leerEntero("Ingrese la opcion para la red cargada manualmente:\n", &opcion_manual) != 0) {
+                        printf("Ingrese una opcion valida.\n");
+                    }
+                 switch(opcion_manual){
                  case 1:
                     agregarEnlaceaRedCargadaManualmente(redmanual);
                     break;
@@ -238,25 +241,30 @@ int main(int argc, char *argv[]) {
                     break;
                  case 6:
                      liberarRed(redmanual);
-                     redmanual=(Red*)malloc(sizeof(Red));
-                     cargaManualdeDatos(redmanual);
-                     break;
+                     redmanual = (Red*)malloc(sizeof(Red));
+                     if (redmanual == NULL) {
+                          printf("Error al asignar memoria para carga manual.\n");
+                          opcion_manual = 0;
+                     }else {
+                        cargaManualdeDatos(redmanual);
+                        }
+                            break;
                  case 0:
                     liberarRed(redmanual);
+                    redmanual=NULL;
                     printf("Saliendo de la red por carga manual\n");
                     break;
                     default: printf("Opcion invalida.\n");
                     break;
-                }
-                }while(opcion_manual!=0);
-            case 0: printf("Saliendo...\n");
-            break;
-            default: printf("Opcion invalida.\n");
-            break;
-        }
-    } while (opcion != 0);
+                 }
 
-        liberarRed(redmanual);
+                }while(opcion_manual!=0);
+                    break;
+                case 0:
+                printf("Saliendo...\n");
+                break;
+        }
+    }while(opcion!=0);
 
     return 0;
 }
