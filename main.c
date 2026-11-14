@@ -216,8 +216,6 @@ int main(int argc, char *argv[]) {
                 }else{
                 cargaManualdeDatos(redmanual);
                 }
-                break;
-                mostrarMenu1();
                 do {
                     mostrarMenu1();
                     while (leerEntero("Ingrese la opcion para la red cargada manualmente:\n", &opcion_manual) != 0) {

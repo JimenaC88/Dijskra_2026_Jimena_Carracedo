@@ -19,7 +19,7 @@ static int leerEntero(const char *msg, int *out) {
     return 0;
 }
 
-int  setNombreRouter(Red *red, int idx, const char *nombre){
+int  setNombreRouter_Cargado(Red *red, int idx,  char *nombre){
      if(idx<0||idx>=red->numRouters){
         printf("Indice fuera de rango.");
         return 1;
@@ -27,8 +27,11 @@ int  setNombreRouter(Red *red, int idx, const char *nombre){
      if(strlen(nombre)>=MAX_NOMBRE){
         return -1;
      }
-     strcpy(red->nombres[idx], nombre);
+     if (red->nombres[idx] != nombre) {
+        strcpy(red->nombres[idx], nombre);
+        }
      red->nombres[idx][strcspn(red->nombres[idx], "\n")]='\0';
+
      return 0;
 }
 char  *leerNombreRouter(int idx, char *destino){
@@ -45,7 +48,7 @@ int  cargaManualdeDatos(Red *red){
     }
     red->numRouters=cant_routers;
     for(int i=0; i<cant_routers; i++){
-        setNombreRouter(red, i, leerNombreRouter(i, red->nombres[i]));
+        setNombreRouter_Cargado(red, i, leerNombreRouter(i, red->nombres[i]));
     }
     for(int i=0; i<cant_routers; i++){
         for(int j=0; j<cant_routers; j++){

@@ -2,7 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "grafo.h"
-
+int  setNombreRouter(Red *red, int idx,  const char *nombre){
+     if(idx<0||idx>=red->numRouters){
+        printf("Indice fuera de rango.");
+        return 1;
+     }
+     if(strlen(nombre)>=MAX_NOMBRE){
+        return -1;
+     }
+     strcpy(red->nombres[idx], nombre);
+     red->nombres[idx][strcspn(red->nombres[idx], "\n")]='\0';
+     return 0;
+}
 int inicializarRed(Red *red, int cant_routers){
     red->numRouters=cant_routers;
     char bufferNombre[MAX_NOMBRE];
@@ -98,6 +109,5 @@ void mostrarTopologia_deRedCargada(Red *red){
 void liberarRed(Red *red){
     free(red);
 }
-
 
 
