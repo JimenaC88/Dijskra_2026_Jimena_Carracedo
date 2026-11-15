@@ -68,9 +68,10 @@ int cargarTopologiaDesdeArchivo(Red *red, const char *ruta) {
     char linea[MAX_LINEA];
     int n = 0;
 
-    // 1. Leer cantidad de routers (saltando comentarios y líneas vacías)
     while (fgets(linea, sizeof(linea), f) != NULL) {
-        if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r') continue;
+        if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r'){
+                continue;
+        }
         if (sscanf(linea, "%d", &n) != 1 || n < 1 || n > MAX_ROUTERS) {
             fclose(f);
             return -1;
@@ -85,7 +86,6 @@ int cargarTopologiaDesdeArchivo(Red *red, const char *ruta) {
 
     inicializarRed(red, n);
 
-    // 2. Leer los N nombres de los routers
     int leidos = 0;
     while (leidos < n && fgets(linea, sizeof(linea), f) != NULL) {
         if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r') continue;
@@ -102,7 +102,6 @@ int cargarTopologiaDesdeArchivo(Red *red, const char *ruta) {
         return -1;
     }
 
-    // 3. Leer enlaces: "RouterA RouterB costo"
     char orig[MAX_NOMBRE], dest[MAX_NOMBRE];
     int costo;
     while (fgets(linea, sizeof(linea), f) != NULL) {
@@ -256,7 +255,7 @@ int main(int argc, char *argv[]) {
     int costo=INF, o=MAX_ROUTERS, d=MAX_ROUTERS;
     do {
         mostrarMenu();
-        if(leerEntero("Ingrese la ocion elegida\n", &opcion)!=0||opcion<0||opcion>8){
+        if(leerEntero("Ingrese la opcion elegida\n", &opcion)!=0||opcion<0||opcion>8){
             printf("Ingrese una opcion valida\n");
             continue;
         };

@@ -11,10 +11,10 @@ typedef struct {
 
 int  construirTablaRutas(const Red *red, int origen, const ResultadoDijkstra *res, EntradaRuta *tabla);
 void mostrarTablaRutas(const Red *red, const EntradaRuta *tabla);
-int  simularEnvioPaquete(const Red *red, int origen, int destino, const ResultadoDijkstra *res);
+int  simularEnvioPaquete(const Red *red, int origen, int destino, ResultadoDijkstra *res);
 int  simularEnvioPaquete_paraRed_CargadaManualmente(Red *red);
 void mostrarTablaRutas_deredManual(Red *red, EntradaRuta *tabla, ResultadoDijkstra *res, int origen);
 int buscar_Router(Red *red, char nombre[]);
-void imprimirCamino(const Red *red, const ResultadoDijkstra *res, int origen, int destino);
+void imprimirCamino(const Red *red, ResultadoDijkstra *res, int origen, int destino);
 
 #endif /* ENRUTAMIENTO_H */
