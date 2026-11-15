@@ -47,8 +47,80 @@ static void mostrarMenu1(void) {
     printf("0. Salir\n");
     printf("Opcion: ");
 }
+static int buscarIndiceArchivo(const Red *red, const char *nombre) {
+    for (int k = 0; k < red->numRouters; k++) {
+        if (strcmp(red->nombres[k], nombre) == 0) {
+            return k;
+        }
+    }
+    return -1;
+}
 
-/*static void opcionCargarArchivo(Red *red) {
+int cargarTopologiaDesdeArchivo(Red *red, const char *ruta) {
+    if (red == NULL || ruta == NULL) return -1;
+
+    FILE *f = fopen(ruta, "r");
+    if (f == NULL) {
+        perror("No se pudo abrir el archivo");
+        return -1;
+    }
+
+    char linea[MAX_LINEA];
+    int n = 0;
+
+    // 1. Leer cantidad de routers (saltando comentarios y líneas vacías)
+    while (fgets(linea, sizeof(linea), f) != NULL) {
+        if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r') continue;
+        if (sscanf(linea, "%d", &n) != 1 || n < 1 || n > MAX_ROUTERS) {
+            fclose(f);
+            return -1;
+        }
+        break;
+    }
+
+    if (n == 0) {
+        fclose(f);
+        return -1;
+    }
+
+    inicializarRed(red, n);
+
+    // 2. Leer los N nombres de los routers
+    int leidos = 0;
+    while (leidos < n && fgets(linea, sizeof(linea), f) != NULL) {
+        if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r') continue;
+        linea[strcspn(linea, "\r\n")] = '\0';
+        if (setNombreRouter(red, leidos, linea) != 0) {
+            fclose(f);
+            return -1;
+        }
+        leidos++;
+    }
+
+    if (leidos < n) {
+        fclose(f);
+        return -1;
+    }
+
+    // 3. Leer enlaces: "RouterA RouterB costo"
+    char orig[MAX_NOMBRE], dest[MAX_NOMBRE];
+    int costo;
+    while (fgets(linea, sizeof(linea), f) != NULL) {
+        if (linea[0] == '#' || linea[0] == '\n' || linea[0] == '\r') continue;
+        if (sscanf(linea, "%31s %31s %d", orig, dest, &costo) == 3) {
+            int i = buscarIndiceArchivo(red, orig);
+            int j = buscarIndiceArchivo(red, dest);
+            if (i < 0 || j < 0 || agregarEnlace(red, i, j, costo) != 0) {
+                fclose(f);
+                return -1;
+            }
+        }
+    }
+
+    fclose(f);
+    return 0;
+}
+static void opcionCargarArchivo(Red *red) {
     char ruta[MAX_LINEA];
     printf("Ruta del archivo: ");
     if (scanf("%255s", ruta) != 1) {
@@ -61,7 +133,8 @@ static void mostrarMenu1(void) {
         printf("Topologia cargada desde '%s'.\n", ruta);
     else
         printf("No se pudo cargar la topologia.\n");
-}*/
+}
+
 int buscar_Router(Red *red, char nombre[]){
     int i=-1;
     for(int k=0; k<red->numRouters; k++){
@@ -80,7 +153,6 @@ int buscar_Router(Red *red, char nombre[]){
     }
     return i;
 }
-
 int agregarEnlace(Red *red, int i, int j, int costo) {
     if (red == NULL || red->numRouters <= 0){
             return -1;
@@ -180,6 +252,8 @@ int main(int argc, char *argv[]) {
 
     int opcion=0;
     int opcion_manual=0;
+    char nombre1[MAX_NOMBRE], nombre2[MAX_NOMBRE];
+    int costo=INF, o=MAX_ROUTERS, d=MAX_ROUTERS;
     do {
         mostrarMenu();
         if(leerEntero("Ingrese la ocion elegida\n", &opcion)!=0||opcion<0||opcion>8){
@@ -187,13 +261,28 @@ int main(int argc, char *argv[]) {
             continue;
         };
         switch (opcion) {
-            case 1: //opcionCargarArchivo(&red);
+            case 1: opcionCargarArchivo(&red);
                     break;
             case 2:
                 cargarTopologiaEjemplo(&red);
                 printf("Topologia de ejemplo cargada (%d routers).\n", red.numRouters);
                 break;
-            case 3: agregarEnlace(&red, red.numRouters, red.numRouters, INF);
+            case 3:
+
+                    printf("Ingrese el nombre del router desde el cual desea modificar el enlace:\n");
+                    if(fgets(nombre1, MAX_NOMBRE, stdin)!=NULL){
+                        nombre1[strcspn(nombre1, "\n")]='\0';
+                    }
+                    printf("Ingrese el nombre del router hacia el cual desea modificar el enlace:\n");
+                    if(fgets(nombre2, MAX_NOMBRE, stdin)!=NULL){
+                        nombre2[strcspn(nombre2, "\n")]='\0';
+                    }
+                    o=buscar_Router(&red, nombre1);
+                    d=buscar_Router(&red, nombre2);
+                    leerEntero("Ingrese el costo del enlace: \n", &costo);
+                    if (agregarEnlace(&red, o, d, costo) != 0) {
+                    printf("No se pudo agregar el enlace (verifique que no exista ya o que el costo sea > 0).\n");
+                    }
                     break;
             case 4: mostrarTopologia(&red);
                     break;

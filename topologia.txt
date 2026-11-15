@@ -1,0 +1,10 @@
+# Cantidad de routers
+3
+# Nombres de los routers
+Eva
+PcBox
+Asus
+# Enlaces: origen destino costo
+Eva PcBox 1
+Eva Asus 7
+PcBox Asus 2
